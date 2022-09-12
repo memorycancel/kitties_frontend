@@ -9,7 +9,7 @@ export default function Main (props) {
 
   const [kittyCnt, setKittyCnt] = useState(0)
 
-  const [status] = useState('')
+  const [status, setStatus] = useState('')
 
   useEffect(() => {
     let unsubscribe
@@ -18,8 +18,7 @@ export default function Main (props) {
         // The storage value is an Option<u32>
         // So we have to check whether it is None first
         // There is also unwrapOr
-        console.log("=============")
-        setKittyCnt(newValue.toNumber())
+        setKittyCnt (newValue.toNumber())
       })
       .then(unsub => {
         unsubscribe = unsub
@@ -30,11 +29,13 @@ export default function Main (props) {
   }, [api.query.kitties])
 
   return <Grid.Column width={16}>
-    <h1>小毛孩</h1>
+    <h1>小毛孩 Count: <span>{kittyCnt}</span></h1>
     <Form style={{ margin: '1em 0' }}>
       <Form.Field style={{ textAlign: 'center' }}>
         <TxButton
-          label={kittyCnt} type='SIGNED-TX'
+          label="Create"
+          type='SIGNED-TX'
+          setStatus={setStatus}
           attrs={{
             palletRpc: 'kitties',
             callable: 'create',

@@ -50,7 +50,8 @@ const KittyCard = props => {
   const { id = null, dna = null, owner = null } = kitty
   const displayDna = dna && dna.join(', ')
   const displayId = id === null ? '' : (id < 10 ? `0${id}` : id.toString())
-  const isSelf = accountPair.address === kitty.owner
+  // const isSelf = accountPair.address === kitty.owner
+  const isSelf = true
 
   return <Card>
     { isSelf && <Label as='a' floating color='teal'>我的</Label> }
@@ -68,7 +69,7 @@ const KittyCard = props => {
         </p>
       </Card.Description>
     </Card.Content>
-    <Card.Content extra style={{ textAlign: 'center' }}>{ owner === accountPair.address
+    <Card.Content extra style={{ textAlign: 'center' }}>{ isSelf
       ? <TransferModal kitty={kitty} accountPair={accountPair} setStatus={setStatus}/>
       : ''
     }</Card.Content>

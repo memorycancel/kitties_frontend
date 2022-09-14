@@ -8,7 +8,6 @@ import KittyCards from './KittyCards';
 
 export default function Kitties (props) {
   const { api, keyring } = useSubstrateState()
-  const { accountPair } = props;
   const [kittyCnt, setKittyCnt] = useState(0)
   const [kittyDNAs, setKittyDNAs] = useState([]);
   const [kittyOwners, setKittyOwners] = useState([]);
@@ -69,11 +68,9 @@ export default function Kitties (props) {
     setKitties(kitties);
   }, [kittyDNAs, kittyOwners])
 
-  console.log(kitties)
-
   return <Grid.Column width={16}>
     <h1>小毛孩 Count: <span>{kittyCnt}</span></h1>
-    <KittyCards kitties={kitties} accountPair={accountPair} setStatus={setStatus}/>
+    <KittyCards kitties={kitties} setStatus={setStatus}/>
     <Form style={{ margin: '1em 0' }}>
       <Form.Field style={{ textAlign: 'center' }}>
         <TxButton

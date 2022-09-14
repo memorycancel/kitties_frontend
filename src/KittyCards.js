@@ -3,11 +3,12 @@ import { Button, Card, Grid, Message, Modal, Form, Label } from 'semantic-ui-rea
 
 import KittyAvatar from './KittyAvatar'
 import { TxButton } from './substrate-lib/components'
+import { useSubstrateState } from './substrate-lib'
 
 // --- About Modal ---
 
 const TransferModal = props => {
-  const { kitty, accountPair, setStatus } = props
+  const { kitty, setStatus } = props
   const [open, setOpen] = React.useState(false)
   const [formValue, setFormValue] = React.useState({})
 
@@ -30,12 +31,12 @@ const TransferModal = props => {
     <Modal.Actions>
       <Button basic color='grey' onClick={() => setOpen(false)}>取消</Button>
       <TxButton
-        accountPair={accountPair} label='确认转让' type='SIGNED-TX' setStatus={setStatus}
+        label='确认转让' type='SIGNED-TX' setStatus={setStatus}
         onClick={confirmAndClose}
         attrs={{
-          palletRpc: 'kittiesModule',
+          palletRpc: 'kitties',
           callable: 'transfer',
-          inputParams: [formValue.target, kitty.id],
+          inputParams: [kitty.id, formValue.target],
           paramFields: [true, true]
         }}
       />
@@ -46,12 +47,13 @@ const TransferModal = props => {
 // --- About Kitty Card ---
 
 const KittyCard = props => {
-  const { kitty, accountPair, setStatus } = props
+  const { kitty, setStatus } = props
   const { id = null, dna = null, owner = null } = kitty
   const displayDna = dna && dna.join(', ')
   const displayId = id === null ? '' : (id < 10 ? `0${id}` : id.toString())
-  // const isSelf = accountPair.address === kitty.owner
-  const isSelf = true
+  const { currentAccount } = useSubstrateState()
+  const isSelf = (currentAccount.address === kitty.owner)
+  // const isSelf = true
 
   return <Card>
     { isSelf && <Label as='a' floating color='teal'>我的</Label> }
@@ -70,14 +72,14 @@ const KittyCard = props => {
       </Card.Description>
     </Card.Content>
     <Card.Content extra style={{ textAlign: 'center' }}>{ isSelf
-      ? <TransferModal kitty={kitty} accountPair={accountPair} setStatus={setStatus}/>
+      ? <TransferModal kitty={kitty} setStatus={setStatus}/>
       : ''
     }</Card.Content>
   </Card>
 }
 
 const KittyCards = props => {
-  const { kitties, accountPair, setStatus } = props
+  const { kitties, setStatus } = props
 
   if (kitties.length === 0) {
     return <Message info>
@@ -89,7 +91,7 @@ const KittyCards = props => {
 
   return <Grid columns={3}>{kitties.map((kitty, i) =>
     <Grid.Column key={`kitty-${i}`}>
-      <KittyCard kitty={kitty} accountPair={accountPair} setStatus={setStatus}/>
+      <KittyCard kitty={kitty} setStatus={setStatus}/>
     </Grid.Column>
   )}</Grid>
 }
